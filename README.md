@@ -22,11 +22,11 @@ You can find the list of methods and their API counterparts in [ENDPOINTS.md](EN
 
 ### Additional odota_api() parameters
 
-Full version: `odota_api($hostname, $cooldown, $cli_report_status)`
+Full version: `odota_api($cli_report_status, $hostname, $cooldown)`
 
+* `$cli_report_status`: (bool) report about every action to console. **Default: `false`**
 * `$hostname`: (string) address of OpenDota API instance you're going to work with. **Default: `"https://api.opendota.com/api/"`**
 * `$cooldown`: (int) API's cooldown between requests in milliseconds. **Default: `334`** (approximately 1/3 second)
-* `$cli_report_status`: (bool) report about every action to console. **Default: `false`**
 
 ### Work modes
 
@@ -55,7 +55,11 @@ $od = new odota_api();
 
 $res = $od->match(1234567902);
 
+$od = new odota_api(true);
+
 $res = $od->player(123123123);
+
+$od = new odota_api(true, "localhost", 100);
 
 $res = $od->live();
 ```
