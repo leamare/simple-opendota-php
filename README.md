@@ -1,0 +1,61 @@
+# Simple OpenDota API library for PHP
+
+### API version: 17.5.0
+
+Simple OpenDota API support realization for PHP.
+
+## Requirements
+
+* PHP 5+
+* cURL
+
+## How to use
+
+1. Include `simple_opendota.php` in your project
+2. Create `new odota_api()` instance.
+
+That's it. You can work with OpenDota API through `odota_api` methods.
+
+You can find the list of methods and their API counterparts in [ENDPOINTS.md](ENDPOINTS.md).
+
+## Important Notes
+
+### Additional odota_api() parameters
+
+Full version: `odota_api($hostname, $cooldown, $cli_report_status)`
+
+* `$hostname`: (string) address of OpenDota API instance you're going to work with. **Default: `"https://api.opendota.com/api/"`**
+* `$cooldown`: (int) API's cooldown between requests in milliseconds. **Default: `334`** (approximately 1/3 second)
+* `$cli_report_status`: (bool) report about every action to console. **Default: `false`**
+
+### Work modes
+
+Every method's last parameter is `$mode`. It may have one of three values:
+
+* ` 0`: Safe mode, sleep until API is ready (default)
+* ` 1`: Force mode, don't wait for API cooldown
+* `-1`: Fast mode, drop request if API isn't ready
+
+### API Endpoints with multiple parameters
+
+API Endpoints with multiple GET parameters (for example, `/players/{account_id}/matches`) use additional parameter:
+
+* `$params`: (array) array of parameters. Every key is parameter's name, every value is its value.
+
+It's second to last for the methods of those endpoints. Parameters names are directly translated to API endpoint, so if you'll need them, just check OpenDota Docs and use the same names.
+
+To see what methods use `$params` array and what don't, check [ENDPOINTS.md](ENDPOINTS.md) (or you can check the code itself).
+
+## Example
+
+```PHP
+require "simple_opendota.php";
+
+$od = new odota_api();
+
+$res = $od->match(1234567902);
+
+$res = $od->player(123123123);
+
+$res = $od->live();
+```
