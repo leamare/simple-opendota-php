@@ -481,6 +481,15 @@ class odota_api {
 
     return $this->request("request/".$job_id, $mode);
   }
+  
+  public function request_match($match_id, $mode = 0) {
+    # POST /request/{match_id}
+    # Submit a new parse request
+    #
+    # $match_id = {match_id}
+
+    return $this->request("request/".$match_id, $mode, [], true);
+  }
 
   # ********** Heroes
 

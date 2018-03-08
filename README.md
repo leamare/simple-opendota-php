@@ -14,7 +14,7 @@ Simple OpenDota API support realization for PHP.
 1. Include `simple_opendota.php` in your project
 2. Create `new odota_api()` instance.
 
-That's it. You can work with OpenDota API through `odota_api` methods.
+That's it. You can work with OpenDota API through `odota_api` methods. Every method returns associative array made out of JSON response.
 
 You can find the list of methods and their API counterparts in [ENDPOINTS.md](ENDPOINTS.md).
 
