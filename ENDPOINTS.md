@@ -100,6 +100,7 @@ API Endpoint | Function | Parameters
 
 API Endpoint | Function | Parameters
 -- | -- | --
+`POST /request/{match_id}` | `request_match($match_id)` | `$match_id = {match_id}` - Submit a new parse request.
 `GET /request/{jobid}` | `request_status($job_id)` | `$job_id (string) = {jobid}` - The job ID to query.
 
 ### Heroes

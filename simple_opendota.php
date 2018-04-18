@@ -27,7 +27,7 @@ class odota_api {
   private $last_request = 0;
   private $report_status;
 
-  function __construct($cli_report_status=false, $hostname="https://api.opendota.com/api/", $cooldown=334) {
+  function __construct($cli_report_status=false, $hostname="https://api.opendota.com/api/", $cooldown=400) {
     /**
      * $hostname = URL of API instance. Uses public OpenDota instance by default.
      * $cooldown = API cooldown, 3000ms by default (recommended by OpenDota docs).
@@ -140,8 +140,23 @@ class odota_api {
     }
 
     $this->set_last_request();
-
-    return json_decode($result, true);
+    
+    $result = json_decode($result, true);
+    
+    if(isset($result['error']) || empty($result)) {
+        if ( $mode == 0 ) {
+            if ( $this->report_status )
+                echo("[ ] OpenDotaPHP: ".$result['error'].". Waiting\n");
+            sleep(1);
+            return $this->request($url, $mode, $data, $post);
+        } else if ( $mode == -1 ) {
+            if ( $this->report_status )
+                echo("[E] OpenDotaPHP: ".$result['error'].". Skipping request\n");
+            return false;
+        }
+    } else {
+        return $result;
+    }
   }
 
   # ********** Matches
