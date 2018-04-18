@@ -1,7 +1,7 @@
 <?php
 /**
  * Simple OpenDota API library for PHP
- * API version: 17.5.0
+ * API version: 17.6.0
  *
  * It's quite simple implemetation, that you can use by just requiring it
  * from your code.
@@ -27,14 +27,26 @@ class odota_api {
   private $last_request = 0;
   private $report_status;
 
-  function __construct($cli_report_status=false, $hostname="https://api.opendota.com/api/", $cooldown=400) {
+  function __construct($cli_report_status=false, $hostname="", $cooldown=0, $api_key="") {
     /**
      * $hostname = URL of API instance. Uses public OpenDota instance by default.
-     * $cooldown = API cooldown, 3000ms by default (recommended by OpenDota docs).
+     * $cooldown = API cooldown, 1000ms/200ms by default (recommended by OpenDota docs).
      */
 
-    $this->hostname = $hostname;
-    $this->api_cooldown = $cooldown/1000;
+    if (!empty($hostname))
+      $this->hostname = $hostname;
+    else
+      $this->hostname = "https://api.opendota.com/api/";
+
+    $this->api_key = $api_key;
+
+    if ($cooldown)
+      $this->api_cooldown = $cooldown/1000;
+    else if (!empty($this->api_key))
+      $this->api_cooldown = 0.2;
+    else
+      $this->api_cooldown = 1;
+
     $this->report_status = $cli_report_status;
 
     if ( $this->report_status ) {
@@ -133,6 +145,9 @@ class odota_api {
       }
     }
 
+    if (!empty($this->api_key))
+      $data['api_key'] = $this->api_key;
+
     if($post === FALSE) {
       $result = $this->get($url, $data);
     } else {
@@ -140,9 +155,9 @@ class odota_api {
     }
 
     $this->set_last_request();
-    
+
     $result = json_decode($result, true);
-    
+
     if(isset($result['error']) || empty($result)) {
         if ( $mode == 0 ) {
             if ( $this->report_status )
@@ -496,7 +511,7 @@ class odota_api {
 
     return $this->request("request/".$job_id, $mode);
   }
-  
+
   public function request_match($match_id, $mode = 0) {
     # POST /request/{match_id}
     # Submit a new parse request
