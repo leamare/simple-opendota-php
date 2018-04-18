@@ -1,6 +1,6 @@
 # Simple OpenDota API library for PHP
 
-### API version: 17.5.0
+### API version: 17.6.0
 
 Simple OpenDota API support realization for PHP.
 
@@ -22,11 +22,14 @@ You can find the list of methods and their API counterparts in [ENDPOINTS.md](EN
 
 ### Additional odota_api() parameters
 
-Full version: `odota_api($cli_report_status, $hostname, $cooldown)`
+Full version: `odota_api($cli_report_status, $hostname, $cooldown, $api_key)`
 
 * `$cli_report_status`: (bool) report about every action to console. **Default: `false`**
 * `$hostname`: (string) address of OpenDota API instance you're going to work with. **Default: `"https://api.opendota.com/api/"`**
-* `$cooldown`: (int) API's cooldown between requests in milliseconds. **Default: `334`** (approximately 1/3 second)
+* `$cooldown`: (int) API's cooldown between requests in milliseconds. **Default: `1000` or `200` if API key was specified** (approximately 1 per second)
+* `$api_key`: (string) OpenDota API Key. **Default: none**
+
+If you need to skip one of parameters, you can left it empty for default value.
 
 ### Work modes
 
