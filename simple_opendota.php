@@ -159,15 +159,19 @@ class odota_api {
     $result = json_decode($result, true);
 
     if(isset($result['error']) || empty($result)) {
-        if ( $mode == 0 ) {
+        if ( $mode == -1 ) {
+            if ( $this->report_status )
+                echo("[E] OpenDotaPHP: ".$result['error'].". Skipping request\n");
+            return false;
+        } else if ( $result['error'] == "Not Found" ) {
+            if ( $this->report_status )
+                echo("[ ] OpenDotaPHP: 404, Skipping\n");
+            return false;
+        } if ( $mode == 0 ) {
             if ( $this->report_status )
                 echo("[ ] OpenDotaPHP: ".$result['error'].". Waiting\n");
             sleep(1);
             return $this->request($url, $mode, $data, $post);
-        } else if ( $mode == -1 ) {
-            if ( $this->report_status )
-                echo("[E] OpenDotaPHP: ".$result['error'].". Skipping request\n");
-            return false;
         }
     } else {
         return $result;
