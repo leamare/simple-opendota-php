@@ -50,13 +50,16 @@ class odota_api {
     $this->report_status = $cli_report_status;
 
     if ( $this->report_status ) {
-      echo "[I] OpenDotaPHP: Initialised OpenDota instance.\n[ ] \tHost: $hostname\n";
+      echo "[I] OpenDotaPHP: Initialised OpenDota instance.\n[ ] \tHost: ".$this->hostname."\n";
     }
   }
 
   # Inner class functions
 
   private function get($url, $data = []) {
+    if (!empty($this->api_key))
+      $data['api_key'] = $this->api_key;
+  
     if (!empty($data)) {
       $url .= "?".http_build_query($data);
     }
@@ -88,12 +91,15 @@ class odota_api {
   }
 
   private function post($url, $data = []) {
+    if (!empty($this->api_key))
+      $url .= "?api_key=".$this->api_key;
+    
     $curl = curl_init($this->hostname.$url);
 
     if ( $this->report_status ) {
       echo("...");
     }
-
+    
     curl_setopt($curl, CURLOPT_POST, true);
     curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data));
     curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
@@ -144,9 +150,6 @@ class odota_api {
         }
       }
     }
-
-    if (!empty($this->api_key))
-      $data['api_key'] = $this->api_key;
 
     if($post === FALSE) {
       $result = $this->get($url, $data);
