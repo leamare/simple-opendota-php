@@ -136,7 +136,7 @@ API Endpoint | Function | Parameters
 `GET /teams/{team_id}/players` | `team_players($team_id)` | `$team_id (int) = {team_id}`
 `GET /teams/{team_id}/heroes` | `team_heroes($team_id)` | `$team_id (int) = {team_id}`
 
-### Replays
+### Replays 
 
 API Endpoint | Function | Parameters
 -- | -- | --
@@ -154,8 +154,22 @@ API Endpoint | Function | Parameters
 -- | -- | --
 `GET /live` | `live()` | none
 
+### Scenarios
+
+API Endpoint | Function | Parameters
+-- | -- | --
+`GET /scenarios/itemTimings` | `scenarios_item_timings()` | `$item (string) = item` - Filter by item name e.g. "spirit_vessel"; `$hero_id (int) = hero_id` - Hero ID
+`GET /scenarios/laneRoles` | `scenarios_lane_roles()` | `$lane_role (string) = lane_role` - Filter by lane role 1-4 (Safe, Mid, Off, Jungle); `$hero_id (int) = hero_id` - Hero ID
+`GET /scenarios/misc` | `scenarios_misc()` | `$scenario (string) = scenario` - pos_chat_1min,neg_chat_1min,courier_kill,first_blood
+
 ### Schema
 
 API Endpoint | Function | Parameters
 -- | -- | --
 `GET /schema` | `schema()` | none
+
+### Admin
+
+API Endpoint | Function | Parameters
+-- | -- | --
+`GET /admin/apiMetrics` | `api_metrics()` | none

@@ -1,6 +1,6 @@
 # Simple OpenDota API library for PHP
 
-### API version: 17.6.0
+### API version: 17.6.1
 
 Simple OpenDota API support realization for PHP.
 

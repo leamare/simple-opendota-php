@@ -43,7 +43,7 @@ class odota_api {
     if ($cooldown)
       $this->api_cooldown = $cooldown/1000;
     else if (!empty($this->api_key))
-      $this->api_cooldown = 0.2;
+      $this->api_cooldown = 0.25;
     else
       $this->api_cooldown = 1;
 
@@ -59,7 +59,7 @@ class odota_api {
   private function get($url, $data = []) {
     if (!empty($this->api_key))
       $data['api_key'] = $this->api_key;
-  
+
     if (!empty($data)) {
       $url .= "?".http_build_query($data);
     }
@@ -93,13 +93,13 @@ class odota_api {
   private function post($url, $data = []) {
     if (!empty($this->api_key))
       $url .= "?api_key=".$this->api_key;
-    
+
     $curl = curl_init($this->hostname.$url);
 
     if ( $this->report_status ) {
       echo("...");
     }
-    
+
     curl_setopt($curl, CURLOPT_POST, true);
     curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data));
     curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
@@ -401,9 +401,9 @@ class odota_api {
       $params['less_than_match_id'] = (int)$less_than_match_id;
 
     if ( $sort == 1 )
-      $params['mme_ascending'] = "";
+      $params['mmr_ascending'] = "";
     else if ( $sort == -1 )
-      $params['mme_descending'] = "";
+      $params['mmr_descending'] = "";
 
     return $this->request("publicMatches", $mode, $params);
   }
@@ -661,12 +661,49 @@ class odota_api {
     return $this->request("live", $mode);
   }
 
+  # ********** Scenarios
+
+  public function scenarios_item_timings($item, $hero_id, $mode = 0) {
+    # GET /scenarios/itemTimings
+    # Win rates for certain item timings on a hero for items that cost at least 1400 gold
+    #
+    # $item (string) = item - Filter by item name e.g. "spirit_vessel"
+    # $hero_id (int) = hero_id - Hero ID
+    return $this->request("scenarios/itemTimings", $mode, [ "item" => $item, "hero_id" => $hero_id ]);
+  }
+
+  public function scenarios_lane_roles($lane_role, $hero_id, $mode = 0) {
+    # GET /scenarios/laneRoles
+    # Win rates for heroes in certain lane roles
+    #
+    # $lane_role (string) = lane_role - Filter by lane role 1-4 (Safe, Mid, Off, Jungle)
+    # $hero_id (int) = hero_id - Hero ID
+    return $this->request("scenarios/laneRoles", $mode, [ "lane_role" => $lane_role, "hero_id" => $hero_id ]);
+  }
+
+  public function scenarios_misc($scenario, $mode = 0) {
+    # GET /scenarios/misc
+    # Miscellaneous team scenarios
+    #
+    # $scenario (string) = scenario - pos_chat_1min,neg_chat_1min,courier_kill,first_blood
+    return $this->request("scenarios/misc", $mode, [ "scenario" => $scenario ]);
+  }
+
+
   # ********** Schema
 
   public function schema($mode = 0) {
     # GET /schema
     # Get database schema
     return $this->request("schema", $mode);
+  }
+
+  # ********** Admin
+
+  public function api_metrics($mode = 0) {
+    # GET /admin/apiMetrics
+    # Get API request metrics
+    return $this->request("admin/apiMetrics", $mode);
   }
 
 }
