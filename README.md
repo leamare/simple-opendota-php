@@ -54,7 +54,7 @@ To see what methods use `$params` array and what don't, check [ENDPOINTS.md](END
 ```PHP
 require "simple_opendota.php";
 
-$od = new odota_api();
+$od = new \SimpleOpenDotaPHP\odota_api();
 
 $res = $od->match(1234567902);
 

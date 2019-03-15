@@ -1,7 +1,7 @@
 <?php
 /**
  * Simple OpenDota API library for PHP
- * API version: 17.6.0
+ * API version: 17.6.1
  *
  * It's quite simple implemetation, that you can use by just requiring it
  * from your code.
@@ -19,6 +19,8 @@
  * For functions with `$param` argument see OpenDota docs to see parameters
  * that can be used for the endpoint.
  */
+
+namespace SimpleOpenDotaPHP;
 
 class odota_api {
   private $hostname;
