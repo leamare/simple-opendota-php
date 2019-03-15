@@ -6,8 +6,10 @@ Simple OpenDota API support realization for PHP.
 
 ## Requirements
 
-* PHP 5+
-* cURL
+* PHP >=5.3.0
+* cURL in PHP
+
+You can use Composer to check all the requirements.
 
 ## How to use
 

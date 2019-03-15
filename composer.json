@@ -1,0 +1,16 @@
+{
+    "name": "leamare/simple-opendota-php",
+    "description": "Simple class interface to work with OpenDota API",
+    "type": "library",
+    "license": "GPL-3.0",
+    "authors": [
+        {
+            "name": "Ilia Silakov",
+            "email": "me@ileamare.ru"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0",
+        "ext-curl": "^7.2"
+    }
+}
