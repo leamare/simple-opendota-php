@@ -24,12 +24,12 @@ namespace SimpleOpenDotaPHP;
 
 class odota_api {
   private $hostname;
-  private $ready = true;
+  private $ready = \true;
   private $api_cooldown;
   private $last_request = 0;
   private $report_status;
 
-  function __construct($cli_report_status=false, $hostname="", $cooldown=0, $api_key="") {
+  function __construct($cli_report_status=\false, $hostname="", $cooldown=0, $api_key="") {
     /**
      * $hostname = URL of API instance. Uses public OpenDota instance by default.
      * $cooldown = API cooldown, 1000ms/200ms by default (recommended by OpenDota docs).
@@ -52,7 +52,7 @@ class odota_api {
     $this->report_status = $cli_report_status;
 
     if ( $this->report_status ) {
-      echo "[I] OpenDotaPHP: Initialised OpenDota instance.\n[ ] \tHost: ".$this->hostname."\n";
+      echo("[I] OpenDotaPHP: Initialised OpenDota instance.\n[ ] \tHost: ".$this->hostname."\n");
     }
   }
 
@@ -63,31 +63,31 @@ class odota_api {
       $data['api_key'] = $this->api_key;
 
     if (!empty($data)) {
-      $url .= "?".http_build_query($data);
+      $url .= "?".\http_build_query($data);
     }
 
-    $curl = curl_init($this->hostname.$url);
+    $curl = \curl_init($this->hostname.$url);
 
     if ( $this->report_status ) {
       echo("...");
     }
 
-    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+    \curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, \false);
+    \curl_setopt($curl, CURLOPT_RETURNTRANSFER, \true);
 
-    $response = curl_exec($curl);
+    $response = \curl_exec($curl);
 
-    if ( curl_errno($curl) )
-      $response = false;
+    if ( \curl_errno($curl) )
+      $response = \false;
 
     if ( $this->report_status ) {
-      if ( !curl_errno($curl) )
+      if ( !\curl_errno($curl) )
         echo("OK\n");
       else
-        echo("\n[E] OpenDotaPHP: cURL error: ".curl_error($curl)."\n");
+        echo("\n[E] OpenDotaPHP: cURL error: ".\curl_error($curl)."\n");
     }
 
-    curl_close($curl);
+    \curl_close($curl);
 
     return $response;
   }
@@ -96,50 +96,50 @@ class odota_api {
     if (!empty($this->api_key))
       $url .= "?api_key=".$this->api_key;
 
-    $curl = curl_init($this->hostname.$url);
+    $curl = \curl_init($this->hostname.$url);
 
     if ( $this->report_status ) {
       echo("...");
     }
 
-    curl_setopt($curl, CURLOPT_POST, true);
-    curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data));
-    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+    \curl_setopt($curl, CURLOPT_POST, \true);
+    \curl_setopt($curl, CURLOPT_POSTFIELDS, \http_build_query($data));
+    \curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, \false);
+    \curl_setopt($curl, CURLOPT_RETURNTRANSFER, \true);
 
-    $response = curl_exec($curl);
+    $response = \curl_exec($curl);
 
-    if ( curl_errno($curl) )
-      $response = false;
+    if ( \curl_errno($curl) )
+      $response = \false;
 
     if ( $this->report_status ) {
-      if ( !curl_errno($curl) )
+      if ( !\curl_errno($curl) )
         echo("OK\n");
       else
-        echo("\n[E] OpenDotaPHP: cURL error: ".curl_error($curl)."\n");
+        echo("\n[E] OpenDotaPHP: cURL error: ".\curl_error($curl)."\n");
     }
 
-    curl_close($curl);
+    \curl_close($curl);
 
     return $response;
   }
 
   private function cooldown() {
-    if ( ($ms_timestamp = microtime(true)) - $this->last_request < $this->api_cooldown) {
+    if ( ($ms_timestamp = \microtime(\true)) - $this->last_request < $this->api_cooldown) {
       if ( $this->report_status )
         echo("...Holding On");
 
-      usleep( (int)(($ms_timestamp - $this->last_request) * 1000000) );
+      \usleep( (int)(($ms_timestamp - $this->last_request) * 1000000) );
     }
-    $this->ready = true;
+    $this->ready = \true;
   }
 
   private function set_last_request() {
-    $this->last_request = microtime(true);
-    $this->ready = false;
+    $this->last_request = \microtime(\true);
+    $this->ready = \false;
   }
 
-  private function request($url, $mode, $data = [], $post = false) {
+  private function request($url, $mode, $data = [], $post = \false) {
     if ( $this->report_status )
       echo("[ ] OpenDotaPHP: Sending request to /$url endpoint");
 
@@ -153,7 +153,7 @@ class odota_api {
       }
     }
 
-    if($post === FALSE) {
+    if($post === \false) {
       $result = $this->get($url, $data);
     } else {
       $result = $this->post($url, $data);
@@ -161,21 +161,21 @@ class odota_api {
 
     $this->set_last_request();
 
-    $result = json_decode($result, true);
+    $result = \json_decode($result, \true);
 
     if(isset($result['error']) || empty($result)) {
         if ( $mode == -1 ) {
             if ( $this->report_status )
                 echo("[E] OpenDotaPHP: ".$result['error'].". Skipping request\n");
-            return false;
+            return \false;
         } else if ( $result['error'] == "Not Found" ) {
             if ( $this->report_status )
                 echo("[ ] OpenDotaPHP: 404, Skipping\n");
-            return false;
+            return \false;
         } if ( $mode == 0 ) {
             if ( $this->report_status )
                 echo("[ ] OpenDotaPHP: ".$result['error'].". Waiting\n");
-            sleep(1);
+            \sleep(1);
             return $this->request($url, $mode, $data, $post);
         }
     } else {
@@ -355,7 +355,7 @@ class odota_api {
     #
     # $player_id (int) = {account_id}
 
-    return $this->request("players/".$player_id."/refresh", $mode, [], true);
+    return $this->request("players/".$player_id."/refresh", $mode, [], \true);
   }
 
   # ********** Pro Players
@@ -420,7 +420,7 @@ class odota_api {
     #    $request (string) = sql : PostgreSQL query
 
     if ( empty($request) )
-      return false;
+      return \false;
 
     return $this->request("explorer", $mode, ["sql" => $request]);
   }
@@ -455,7 +455,7 @@ class odota_api {
     $params = [];
 
     if ( empty($request) )
-      return false;
+      return \false;
 
     if ( $similarity != 0.51 )
       $params['similarity'] = (float) $similarity;
@@ -485,7 +485,7 @@ class odota_api {
     # $hero_id (int) = hero_id : Hero ID
 
     if ( !isset($hero_id) )
-      return false;
+      return \false;
     $hero_id = (int)$hero_id;
 
     return $this->request("benchmarks", $mode, ["hero_id" => $hero_id]);
@@ -516,7 +516,7 @@ class odota_api {
     # $job_id (string) = {jobid} - The job ID to query.
 
     if ( empty($job_id) )
-      return false;
+      return \false;
 
     return $this->request("request/".$job_id, $mode);
   }
@@ -527,7 +527,7 @@ class odota_api {
     #
     # $match_id = {match_id}
 
-    return $this->request("request/".$match_id, $mode, [], true);
+    return $this->request("request/".$match_id, $mode, [], \true);
   }
 
   # ********** Heroes
