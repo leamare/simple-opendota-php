@@ -48,7 +48,7 @@ API Endpoint | Function | Parameters
 -- | -- | --
 `GET /publicMatches` | `public_matches([$less_than_match_id])` | `$less_than_match_id (int) = less_than_match_id` - Get matches with a match ID lower than this value; null = not set (default)
 
-### Public Matches
+### Explorer
 
 API Endpoint | Function | Parameters
 -- | -- | --
@@ -173,3 +173,15 @@ API Endpoint | Function | Parameters
 API Endpoint | Function | Parameters
 -- | -- | --
 `GET /admin/apiMetrics` | `api_metrics()` | none
+
+### Find Matches
+
+API Endpoint | Function | Parameters
+-- | -- | --
+`GET /findMatches` | `find_matches()` | `$teams (array)` - Array of Hero IDs
+
+### Feed
+
+API Endpoint | Function | Parameters
+-- | -- | --
+`GET /feed` | `feed()` | `$params = [] (array)` - Array of filters; available filters: seq_num, game_mode, leagueid, included_account_id
