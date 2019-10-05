@@ -137,12 +137,14 @@ class odota_api {
 
     if ( \curl_errno($curl) )
       $response = \false;
+    if ( strpos($response, "<!DOCTYPE HTML>") !== FALSE )
+      $response = "{\"error\":\"Node disabled\"}";
 
     if ( $this->report_status ) {
-      if ( !\curl_errno($curl) )
-        echo("OK\n");
-      else
+      if ( \curl_errno($curl) || !$response )
         echo("\n[E] OpenDotaPHP: cURL error: ".\curl_error($curl)."\n");
+      else 
+        echo("OK\n");
     }
 
     \curl_close($curl);
@@ -213,6 +215,10 @@ class odota_api {
         } else if ( $result['error'] == "Not Found" ) {
             if ( $this->report_status )
                 echo("[ ] OpenDotaPHP: 404, Skipping\n");
+            return \false;
+        } else if ( $result['error'] == "Node disabled" ) {
+            if ( $this->report_status )
+                echo("[ ] OpenDotaPHP: Node disabled\n");
             return \false;
         } if ( $mode == 0 ) {
             if ( $this->report_status )
@@ -973,11 +979,11 @@ class odota_api {
    * 
    * @return mixed $result
    */
-  public function feed($params = [], $mode = 0) {
-    if(!is_array($params)) return false;
-    if(empty($this->api_key)) return false;
-    return $this->request("findMatches", $mode, $teams);
-  }
+  // public function feed($params = [], $mode = 0) {
+  //   if(!is_array($params)) return false;
+  //   if(empty($this->api_key)) return false;
+  //   return $this->request("findMatches", $mode, $teams);
+  // }
 }
 
 ?>
