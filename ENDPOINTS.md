@@ -14,6 +14,7 @@ API Endpoint | Function | Parameters
 
 API Endpoint | Function | Parameters
 -- | -- | --
+`GET /playersByRank` | `playersByRank()` | 
 `GET /players/{account_id}` | `player($player_id)` | `$player_id (int) = {account_id}`
 `GET /players/{account_id}/wl` | `player_winloss($player_id [, $params])` | `$player_id (int) = {account_id}`, `$params`
 `GET /players/{account_id}/recentMatches` | `player_recent_matches($player_id)` | `$player_id (int) = {account_id}`
@@ -47,6 +48,12 @@ API Endpoint | Function | Parameters
 API Endpoint | Function | Parameters
 -- | -- | --
 `GET /publicMatches` | `public_matches([$less_than_match_id])` | `$less_than_match_id (int) = less_than_match_id` - Get matches with a match ID lower than this value; null = not set (default)
+
+### Parsed Matches
+
+API Endpoint | Function | Parameters
+-- | -- | --
+`GET /parsedMatches` | `parsed_matches([$less_than_match_id])` | `$less_than_match_id (int) = less_than_match_id` - Get matches with a match ID lower than this value; null = not set (default)
 
 ### Explorer
 
@@ -173,6 +180,12 @@ API Endpoint | Function | Parameters
 API Endpoint | Function | Parameters
 -- | -- | --
 `GET /admin/apiMetrics` | `api_metrics()` | none
+
+### Constants
+
+API Endpoint | Function | Parameters
+-- | -- | --
+`GET /constants/{resource}` | `constants()` | `$resource (string) = {resource}` - Resource name e.g. `heroes`
 
 ### Find Matches
 

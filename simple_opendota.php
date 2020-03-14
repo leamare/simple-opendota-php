@@ -246,6 +246,18 @@ class odota_api {
     return $this->request("matches/".$match_id, $mode);
   }
 
+  // ********** Players By Rank
+
+  /**
+   * GET /playersByRank
+   * Players ordered by rank/medal tier
+   * 
+   * @return mixed $result List of players [ account_id, rank_tier, fh_unavailable ]
+   */
+  public function playersByRank($mode = 0) {
+    return $this->request("playersByRank", $mode);
+  }
+
   // ********** Players
 
   /**
@@ -511,6 +523,26 @@ class odota_api {
     return $this->request("publicMatches", $mode, $params);
   }
 
+  // ********** Parsed Matches
+
+  /** 
+   * GET /parsedMatches
+   * Get list of randomly sampled public matches
+   * 
+   * @param int $less_than_match_id = null Get matches with a match ID lower than this value
+   * @param int $mode = 0 Fast mode flag (skip requests if cooldown or wait for API)
+   * 
+   * @return mixed $result
+   */
+  public function parsed_matches($less_than_match_id = null, $mode = 0) {
+    $params = [];
+
+    if ( $less_than_match_id !== null )
+      $params['less_than_match_id'] = (int)$less_than_match_id;
+
+    return $this->request("parsedMatches", $mode, $params);
+  }
+
   // ********* Explorer
 
   /**
@@ -564,19 +596,15 @@ class odota_api {
    * Search players by personaname
    * 
    * @param string $request Search query string
-   * @param float $similarity = 0.51 Minimum similarity treshold, between 0 and 1
    * @param int $mode = 0 Fast mode flag (skip requests if cooldown or wait for API)
    * 
    * @return mixed $result
    */
-  public function search($request, $similarity=0.51, $mode = 0) {
+  public function search($request, $mode = 0) {
     $params = [];
 
     if ( empty($request) )
       return \false;
-
-    if ( $similarity != 0.51 )
-      $params['similarity'] = (float) $similarity;
 
     $params['q'] = $request;
 
@@ -726,7 +754,7 @@ class odota_api {
     return $this->request("heroes/".((int)$hero_id)."/durations", $mode);
   }
 
-/**
+  /**
    * GET /heroes/{hero_id}/players
    * Get players who have played this hero
    * 
@@ -964,6 +992,22 @@ class odota_api {
     if(!is_array($teams)) return false;
     $teams = array_combine(["teamA", "teamB"], $teams);
     return $this->request("findMatches", $mode, $teams);
+  }
+
+  // ********** Constants
+
+  /**
+   * GET /constants
+   * Get static game data mirrored from the dotaconstants repository
+   * Resources: https://github.com/odota/dotaconstants/tree/master/build
+   * 
+   * @param string $resource Resource name e.g. heroes
+   * @param int $mode = 0 Fast mode flag (skip requests if cooldown or wait for API)
+   * 
+   * @return mixed $result
+   */
+  public function constants($resource, $mode = 0) {
+    return $this->request("constants/".$resource, $mode);
   }
 
   // ********** Feed

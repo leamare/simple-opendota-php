@@ -1,8 +1,14 @@
 # Simple OpenDota API library for PHP
 
-### API version: 17.7.0
+### API version: 18.0.0
 
-Simple OpenDota API support realization for PHP.
+Simple OpenDota API support for PHP.
+
+Handles API cooldown (to not get banned), API key usage, usage of various instances of OpenDota, Cli reporting.
+
+It's sync only version with weird methods naming. It's intended to be used for **simple** PHP scripts (cli ones in the first place). For Async version made for ReactPHP look for reactive-opendota-php.
+
+Note: It doesn't have an implementation for /feed endpoint. The endpoint tends to be unstable and it also requires HTTP streams support which doesn't work well with sync PHP.
 
 ## Requirements
 
