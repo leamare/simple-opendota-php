@@ -156,11 +156,14 @@ class odota_api {
    * Handles API cooldown
    */
   private function cooldown() {
-    if ( ($ms_timestamp = \microtime(\true)) - $this->last_request < $this->api_cooldown) {
+    // I shouldn't really use microtime here, but I will anyway
+    // mostly because it's easier to read this way
+    $ms_timestamp = \microtime(\true) - $this->last_request;
+    if ( $ms_timestamp < $this->api_cooldown) {
       if ( $this->report_status )
         echo("...Holding On");
 
-      \usleep( (int)(($ms_timestamp - $this->last_request) * 1000000) );
+      \usleep( (int)($this->api_cooldown - $ms_timestamp) * 1000000 );
     }
     $this->ready = \true;
   }
