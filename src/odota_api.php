@@ -88,11 +88,23 @@ class odota_api {
       $url .= "?".\http_build_query($data);
     }
 
+    $q = http_build_query($data);
+    if (stripos($url, 'https'))
+      $type = 'https';
+    else 
+      $type = 'http';
+      
+    $context  = stream_context_create([
+      $type => [
+        'ignore_errors' => true
+      ]
+    ]);
+    
     if ( $this->report_status ) {
       echo("...");
     }
 
-    $response = @\file_get_contents($this->hostname.$url);
+    $response = @\file_get_contents($this->hostname.$url, false, $context);
 
     if ( strpos($response, "<!DOCTYPE HTML>") !== FALSE )
       $response = "{\"error\":\"Node disabled\"}";
@@ -120,13 +132,19 @@ class odota_api {
       $url .= "?api_key=".$this->api_key;
 
     $q = http_build_query($data);
+    if (stripos($url, 'https'))
+      $type = 'https';
+    else 
+      $type = 'http';
+      
     $context  = stream_context_create([
-      'http' => [
+      $type => [
         'method' => 'POST',
         'header'  => 'Content-Type: application/x-www-form-urlencoded'. 
-          "\nContent-Length: ".strlen($q),
+          "\r\nContent-Length: ".strlen($q),
         'content' => $q,
         'timeout' => 60,
+        'ignore_errors' => true
       ]
     ]);
 
@@ -204,31 +222,38 @@ class odota_api {
     }
 
     $this->set_last_request();
+    
+    if (empty($result)) {
+      $err = error_get_last();
+    } else {
+      $result = \json_decode($result, \true);
+      if (empty($result))
+        $err = error_get_last();
+    }
 
-    $result = \json_decode($result, \true);
-
-    if(isset($result['error']) || empty($result)) {
+    if(isset($result['error']) || !empty($err)) {
+      $e = $result['error'] ?? $err['message'];
       if ( $mode == -1 ) {
         if ( $this->report_status )
-          echo("[E] OpenDotaPHP: ".$result['error'].". Skipping request\n");
+          echo("[E] OpenDotaPHP: $e. Skipping request\n");
         if ( $this->throw )
-          throw new OpenDotaException($result['error']);
+          throw new OpenDotaException($e);
         return \false;
-      } elseif ( $result['error'] == "Not Found" ) {
+      } elseif ( stripos($e, "Not Found") !== false ) {
         if ( $this->report_status )
           echo("[ ] OpenDotaPHP: 404, Skipping\n");
         if ( $this->throw )
-          throw new OpenDotaException($result['error']);
+          throw new OpenDotaException($e);
         return \false;
-      } elseif ( $result['error'] == "Node disabled" ) {
+      } elseif ( stripos($e, "Node disabled") !== false || stripos($e, "400") !== false ) {
         if ( $this->report_status )
-          echo("[ ] OpenDotaPHP: Node disabled\n");
+          echo("[ ] OpenDotaPHP: Node disabled or bad request\n");
         if ( $this->throw )
-          throw new OpenDotaException($result['error']);
+          throw new OpenDotaException($e);
         return \false;
       } if ( $mode == 0 ) {
         if ( $this->report_status )
-          echo("[ ] OpenDotaPHP: ".$result['error'].". Waiting\n");
+          echo("[ ] OpenDotaPHP: $e. Waiting\n");
         \sleep(1);
         return $this->request($url, $mode, $data, $post);
       }
