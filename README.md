@@ -2,7 +2,7 @@
 
 ### API version: 18.0.0
 
-Simple OpenDota API support for PHP.
+Simple [OpenDota API](https://docs.opendota.com/) support for PHP.
 
 Handles API cooldown (to not get banned), API key usage, usage of various instances of OpenDota, Cli reporting.
 
@@ -47,6 +47,12 @@ Every method's last parameter is `$mode`. It may have one of three values:
 * ` 1`: Force mode, don't wait for API cooldown
 * `-1`: Fast mode, drop request if API isn't ready
 
+### Setting custom callbacks
+
+* `set_get_callback(function($url, $data) {})` for GET requests only
+* `set_post_callback(function($url, $data) {})` for POST requests only
+* `set_request_callback(function($url, $data, $post) {})` for all requests (recommended)
+
 ### API Endpoints with multiple parameters
 
 API Endpoints with multiple GET parameters (for example, `/players/{account_id}/matches`) use additional parameter:
@@ -60,6 +66,7 @@ To see what methods use `$params` array and what don't, check [ENDPOINTS.md](END
 ## Example
 
 ```PHP
+
 require "simple_opendota.php";
 
 $od = new \SimpleOpenDotaPHP\odota_api();
@@ -73,4 +80,13 @@ $res = $od->player(123123123);
 $od = new odota_api(true, "localhost", 100);
 
 $res = $od->live();
+
+$od->set_get_callback(function($url, $data) {
+  return $url.' '.json_encode($data);
+});
+
+$od->set_request_callback(function($url, $data, $post) {
+  return 'R '.$url.' '.json_encode($data);
+});
+
 ```

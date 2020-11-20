@@ -39,6 +39,14 @@ class odota_api {
   /** @var bool $report_status Verbose mode handler */
   private $report_status;
 
+  /** @var callable $cb_get Custom request handler for GET requests, should accept ($url, $data) */
+  private $cb_get = null;
+  /** @var callable $cb_post Custom request handler for POST requests, should accept ($url, $data) */
+  private $cb_post = null;
+  /** @var callable $cb_post Custom request handler for all requests, should accept ($url, $data) */
+  private $cb_request = null;
+
+
   /**
    * @param bool $cli_report_status = false Verbose mode flag
    * @param string $hostname = "" URL of API instance. Uses public OpenDota instance by default.
@@ -83,6 +91,9 @@ class odota_api {
   private function get($url, $data = []) {
     if (!empty($this->api_key))
       $data['api_key'] = $this->api_key;
+
+    if ($this->cb_get)
+      return ($this->cb_get)($url, $data);
 
     if (!empty($data)) {
       $url .= "?".\http_build_query($data);
@@ -130,6 +141,9 @@ class odota_api {
   private function post($url, $data = []) {
     if (!empty($this->api_key))
       $url .= "?api_key=".$this->api_key;
+
+    if ($this->cb_get)
+      return ($this->cb_post)($url, $data);
 
     $q = http_build_query($data);
     if (stripos($url, 'https'))
@@ -215,10 +229,15 @@ class odota_api {
       }
     }
 
+    if ($this->cb_request)
+      return ($this->cb_request)($url, $data, $post);
+
     if($post === \false) {
       $result = $this->get($url, $data);
+      if ($this->cb_get) return $result;
     } else {
       $result = $this->post($url, $data);
+      if ($this->cb_post) return $result;
     }
 
     $this->set_last_request();
@@ -260,6 +279,20 @@ class odota_api {
     } else {
       return $result;
     }
+  }
+
+  // ********** Custom request handlers (for async support)
+
+  public function set_get_callback(?callable $f) {
+    $this->cb_get = $f;
+  }
+
+  public function set_post_callback(?callable $f) {
+    $this->cb_post = $f;
+  }
+
+  public function set_request_callback(?callable $f) {
+    $this->cb_request = $f;
   }
 
   // ********** Matches
