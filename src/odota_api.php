@@ -832,6 +832,18 @@ class odota_api {
     return $this->request("heroes/".((int)$hero_id)."/players", $mode);
   }
 
+  /**
+   * GET /heroes/{hero_id}/itemPopularity
+   * Get item popularity of hero categoried by start, early, mid and late game, analyzed from professional 
+   * 
+   * @param int $hero_id {hero_id}
+   * @param $mode = 0 Fast mode flag (skip requests if couldown or wait for API)
+   */
+  public function hero_itemPopularity($hero_id, $mode = 0) {
+    $hero_id = (int)$hero_id;
+    return $this->request("heroes/".((int)$hero_id)."/itemPopularity", $mode);
+  }
+
   // ********** Hero Stats
 
   /**
