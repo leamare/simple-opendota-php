@@ -119,6 +119,7 @@ API Endpoint | Function | Parameters
 `GET /heroes/{hero_id}/matchups` | `hero_matchups($hero_id)` | `$hero_id (int) = {hero_id}`
 `GET /heroes/{hero_id}/durations` | `hero_durations($hero_id)` | `$hero_id (int) = {hero_id}`
 `GET /heroes/{hero_id}/players` | `hero_players($hero_id)` | `$hero_id (int) = {hero_id}`
+`GET /heroes/{hero_id}/itemPopularity` | `hero_itemPopularity($hero_id)` | `$hero_id (int) = {hero_id}`
 
 ### Hero Stats
 
