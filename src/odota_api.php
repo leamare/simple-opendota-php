@@ -264,7 +264,7 @@ class odota_api {
         if ( $this->throw )
           throw new OpenDotaException($e);
         return \false;
-      } elseif ( stripos($e, "Node disabled") !== false || stripos($e, "400") !== false ) {
+      } elseif ( stripos($e, "Node disabled") !== false || stripos($e, "400") !== false || stripos($e, "Server Error") !== false  ) {
         if ( $this->report_status )
           echo("[ ] OpenDotaPHP: Node disabled or bad request\n");
         if ( $this->throw )
